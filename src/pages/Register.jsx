@@ -1,7 +1,32 @@
-import React from 'react';
+import React, { use } from 'react';
 import { Link } from 'react-router';
+import { AuthContext } from '../provider/AuthProvider';
 
 const Register = () => {
+    const { createUser, setUser } = use(AuthContext)
+    const handleRegister = (e) => {
+        e.preventDefault();
+        console.log(e.target);
+        const form = e.target;
+        const name = form.name.value;
+        const photoUrl = form.photo.value;
+        const email = form.email.value;
+        const password = form.password.value;
+        console.log({ name, photoUrl, email, password });
+        createUser(email, password)
+            .then((result) => {
+                const user = result.user;
+                // console.log(user);
+                setUser(user);
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                alert(errorMessage);
+            })
+
+
+    }
     return (
         <div className="hero bg-base-200 min-h-screen">
             <div className="hero-content flex-col lg:flex-row-reverse">
@@ -9,20 +34,20 @@ const Register = () => {
                     <h1 className="text-5xl font-bold">Register now!</h1>
                 </div>
                 <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
-                    <div className="card-body">
+                    <form onSubmit={handleRegister} className="card-body">
                         <fieldset className="fieldset">
                             <label className="label">Name</label>
-                            <input type="Name" className="input" placeholder="Name" />
+                            <input name='name' type="text" className="input" placeholder="Name" required />
                             <label className="label">Ptoto URL</label>
-                            <input type="text" className="input" placeholder="Ptoto URL" />
+                            <input name='photo' type="text" className="input" placeholder="Ptoto URL" required />
                             <label className="label">Email</label>
-                            <input type="email" className="input" placeholder="Email" />
+                            <input name='email' type="email" className="input" placeholder="Email" required />
                             <label className="label">Password</label>
-                            <input type="password" className="input" placeholder="Password" />
-                            <button className="btn btn-neutral mt-4">Register</button>
+                            <input name='password' type="password" className="input" placeholder="Password" required />
+                            <button type='submit ' className="btn btn-neutral mt-4">Register</button>
                             <p className='py-3'>If you are allready  register,Please  <Link to="/auth/login"><span className='text-blue-400'>Login</span></Link></p>
                         </fieldset>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
